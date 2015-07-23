@@ -1,0 +1,351 @@
+/* copy right PHAM NGOC HIEU lop k2k52 DH Vinh,su dung IDE Dev C++ 4.9.9.2
+   bai viet nay do trinh do co han nên m?nh mat 2 tuan moi lam xong.
+   Khi lam xong roi ,chay duoc roi ,xem lai code thi cung chang nho doan code nay lam viec gi, bien nay dung de lam gi.
+   Nhung du sao thi cung la do minh lam,minh lam cai dieu ma ca lop chang ai lam.Do cung la dieu dang tu hao.
+*/
+
+
+#include<stdio.h>
+#include<conio.h>
+#include<iostream.h>
+#include<time.h>
+#include<malloc.h>
+#include<string.h>
+#include<dos.h>
+#include<graphics.h>
+int pre;                                   // bien xac dinh bo ma prefix
+class bo_ma
+{
+      private:
+              int n;
+              
+      public:
+             char **p;
+             void add();                   // ham chuc nang nhap du lieu cho bo ma
+                                           // cho nay minh phai bo ham huy vi khong hieu sao cu bo no vao thi ham so_sanh_bm() bi loi
+             void dislay();                //hien thi bo ma nhi phan
+             void kiem_tra_bm();           // kiem tra xem do co phai la bo ma nhi phan hop le hay khong ? neu khong phai thi thoat chuong trinh
+             void operator=(bo_ma b);      // dinh nghia toa tu bang cho kieu du lieu bo_ma
+             void prefix();                // kiem tra xem bo ma co phai la frefix hay khong  
+             bo_ma so_sanh_bm(bo_ma &d);    // doi chieu hai bo ma voi nhau de tao thanh mot bo ma moi 
+             bo_ma so_sanh_bm();           // doi chieu bo ma voi chinh no de tao thanh bo ma moi
+             int kiem_tra_trung(bo_ma &d);  // kiem tra xem co ma nao cua bo ma nay trung voi mot tu ma cua bo ma khac hay khong ?
+             int kiem_tra_trung(char *a); // kiem tra xem co phan tu nao cua doi tuong bo_ma trung voi xau a hay khong ? neu co tr? ve 1,neu khong tra ve 0
+             friend int kiem_tra_pre(char *d1,char *d2);
+             friend int so_pt(bo_ma &b);   // xac dinh so phan tu co trong doi tuong bo ma
+            
+};
+//-----------------------------------------------
+int bo_ma::kiem_tra_trung(char *a)         // ham nay dung trong viec xac dinh bo ma co bi lap vo tan hay khong ?
+{                                          
+    for(int i=0;i<n;i++)
+       {
+           if(strcmp(p[i],a)==0)
+            return 1;
+       }
+       return 0;
+}
+//------------------------------------------------
+int kiem_tra_pre(char *d1,char *d2)        // ham kiem tra tu ma co phai la prefix cua tu ma khac ko ?, nhung khong xac dinh duoc chinh xac thang nao la prefix cua thang nao
+{
+    int i=0;
+    while(d1[i]==d2[i])
+    {
+      i++;
+      if((d1[i]=='\0')||(d2[i]=='\0'))
+      return 1;
+    }
+    return 0;
+};
+//-------------------------------------------------
+int so_pt(bo_ma &b)
+{
+    return b.n;
+};
+//--------------------------------------------------    
+void bo_ma::prefix()
+{
+     int i,j,k=0;
+     for(i=0;i<n-1;i++)
+        for(j=i+1;j<n;j++)
+           {
+                if(kiem_tra_pre(p[i],p[j])==1) // co hien tuong tu ma trung prefix -> bo ma ko phai la prefix
+                k++;
+           }
+     if( k==0 ) 
+     {
+         cout<<" bo ma co tinh prefix ";
+         pre=1;
+     }
+     else
+     {
+         cout<<" bo ma khong co tinh prefix";
+         pre=0;
+     }
+}
+//---------------------------------------------------------------               
+void bo_ma::operator=(bo_ma b)
+{
+     n=b.n;
+     p=new char*[n];
+     for(int i=0;i<n;i++)
+        {
+             p[i]=new char[strlen(b.p[i])];
+             strcpy(p[i],b.p[i]);
+        }
+}
+//---------------------------------------------------------------
+void bo_ma::add()
+{
+     char gt[100];
+              cout<< " nhap so tu ma cua bo ma n= ";
+              cin>>n;
+              cin.ignore(1);
+              p=new char*[n];
+              for(int i=0;i<n;i++)
+              {
+                      cout<<"X["<<i<<"]=";
+                      gets(gt);
+                      int d=strlen(gt);
+                      p[i]=new char[d];
+                      strcpy(p[i],gt);
+              }
+}
+//----------------------------------------------------------------
+void bo_ma::dislay()
+             {
+                  cout<<"\n bang thu ma   ";
+                  for(int i=0;i<n;i++)
+                  cout<<p[i]<<"  ";
+             }
+//----------------------------------------------------------------
+char *tao_xau(char *d1,char *d2)
+{
+    char *a;
+    if(kiem_tra_pre(d1,d2)==1)  
+            { 
+                               int l=strlen(d1)-strlen(d2);
+                               char b[l];
+                               for(int i=0;i<l;i++)
+                                 b[i]=d1[i+strlen(d2)];
+                               b[l]='\0';
+                               a=new char[l+1];
+                               strcpy(a,b);
+            }
+    return a;
+         
+ };
+//------------------------------------------------------------------
+void bo_ma::kiem_tra_bm()
+             {
+                  for(int i=0;i<n;i++)
+                  for(int j=0;j<strlen(p[i]);j++)
+                  {
+                          char q;
+                          q=*(p[i]+j);
+                          if(q=='1'||q=='0')
+                          continue;
+                          else
+                          {
+                              cout<<" phai la ma nhi phan, ban da nhap sai ";
+                              getch();
+                              exit(1);
+                          }
+                  }
+                  for(int i=0;i<n-1;i++)
+                  for(int j=i+1;j<n;j++)
+                    if(strcmp(p[i],p[j])==0) 
+                    {
+                                          cout<<" ton tai bo ma trung nhau ";
+                                          getch();
+                                          exit(1);
+                    }
+                  cout<<"\n ban da nhap bo ma hop le \n";
+             }
+//------------------------------------------------------------------------------
+bo_ma bo_ma::so_sanh_bm(bo_ma &d)  // tham so phai la tham chieu vi chung ta chua xay dung ham thiet lap sao chep
+{                                  // so sánh hai bo ma voi nhau de tao thanh bo ma tiep theo,chu y là o day co su so sanh hai phia
+    bo_ma k;
+    int k1=0;
+    char *s[50];
+    for(int i=0;i<n;i++)  
+    for(int j=0;j<d.n;j++)
+       if(kiem_tra_pre(p[i],d.p[j])==1)  
+       {
+                                         
+          if(strlen(p[i])>strlen(d.p[j]))
+             {
+                              
+                              s[k1]=new char(strlen(tao_xau(p[i],d.p[j])));
+                              strcpy(s[k1],tao_xau(p[i],d.p[j]));
+                              k1++;
+             }
+          else
+             {
+                              s[k1]=new char(strlen(tao_xau(d.p[j],p[i])));
+                              strcpy(s[k1],tao_xau(d.p[j],p[i]));
+                              k1++;
+             } 
+       }
+    k.n=k1;
+    k.p=new char*[k1];
+     for(int i=0;i<k1;i++)
+        {
+             k.p[i]=new char[strlen(s[i])];
+             strcpy(k.p[i],s[i]);
+        }    
+     return k;
+}
+//-----------------------------------------------------------------------------
+bo_ma bo_ma::so_sanh_bm()   // ham so sanh bo ma voi chinh no 
+{  
+    int v;
+    bo_ma k;
+    int k1=0;
+    char *s[50];
+    for(int i=0;i<n-1;i++)  
+    for(int j=i+1;j<n;j++)
+       if(kiem_tra_pre(p[i],p[j])==1)  
+       {
+                                         
+          if(strlen(p[i])>strlen(p[j]))
+             {
+                              
+                              s[k1]=new char(strlen(tao_xau(p[i],p[j])));
+                              strcpy(s[k1],tao_xau(p[i],p[j]));
+                              k1++;
+             }
+          else
+             {
+                              s[k1]=new char(strlen(tao_xau(p[j],p[i])));
+                              strcpy(s[k1],tao_xau(p[j],p[i]));
+                              k1++;
+             } 
+       }
+    
+ 
+   k.n=k1;
+    k.p=new char*[k1];
+     for(int i=0;i<k1;i++)
+        {
+             k.p[i]=new char[strlen(s[i])];
+             strcpy(k.p[i],s[i]);
+        }    
+     return k; 
+
+} 
+//------------------------------------------------------------------------------        
+ int bo_ma::kiem_tra_trung(bo_ma &d)
+ {
+     for(int i=0;i<d.n;i++)
+        for(int j=0;j<n;j++)
+         while(strcmp(d.p[i],p[j])==0)
+         return 1;
+     return 0;
+ }
+//-----------------------------------------------------------------------------             
+int main()
+{
+    bo_ma p[50];
+    p[0].add();                                    // nhap bo ma vao 
+    p[0].kiem_tra_bm();
+    p[0].prefix();                                 // kiem tra xem no co tinh prefix hay khong,neu co frefix thi khang dinh la phan tach duoc luon do mat cong
+    if(pre==1)
+    cout<<" no hoan toan phan tach duoc ";
+    else    // neu khong phan tach duoc thi thuc hien buoc tiep theo nhu sau
+    { 
+        cout<<"\n ta phai lap bang thu ma ";
+        p[1]=p[0].so_sanh_bm();  // cot dau tien chinh la bo ma nhap vao va de tao cot ma thu 2 thi ta phai so sanh voi chinh no. dung ham so_sanh_bm() 
+        int i=1;
+        do
+        {
+            Sleep(1000);
+            p[i].dislay();    // hien thi cot thu ma thu i
+           if(p[i].kiem_tra_trung(p[0])==1)  // kiem tra xem o cot thu i nay co tu ma nao trung voi tu ma trong cot 1 hay khong
+             {
+              cout<<" \n bo ma khong phan tach duoc";  // neu co thi nghia la khong phan tach duoc
+              getch();
+              exit(1);
+              }
+           else 
+             {
+              p[i+1]=p[i].so_sanh_bm(p[0]);    // neu khong thi tiep tuc so sanh cot voi cot 1 de tao thanh bang ma tiep theo ( chu y la phai so sanh 2 chieu )
+              if(so_pt(p[i+1])==0)        // sau khi tao duoc cot tiep theo roi thi kiem tra xem no co phai la cot rong hay khong 
+                {
+                                  cout<<"bo ma phan tach duoc";  // neu la cot rong thi bo ma phan tach duoc
+                                  getch();
+                                  exit(1);
+                }
+              i++;    // neu khong phai rong thi tiep tucvong lap de tao ra nhung cot thu ma tiep theo
+              }
+        }
+        while(i<10);  // viec lam nay chi tien hanh trong 10 cot dau tien, nhung cot tiep theo phai kiem tra xem co xay ra truong hop bang ma dai vo tan hay khong
+        cout<<"\n rat co the bo ma nay co do cham giai ma la vo han \n";
+        for(int u=0;u<6;u++)
+        {
+                cout<<". ";
+                Sleep(1000);    // tao dau cham de nguoi dung ho co cam giac la may dang chay thoi
+        } 
+         do  // bat dau voi nhung cot ma tiep theo,cung tuong tu nhung co them buoc kiem tra lap vo tan
+        {
+              int s,l=0;
+              p[i]=p[i-1].so_sanh_bm(p[0]);
+              s=so_pt(p[i]);
+              if(s==0) // kiem tra cot thu ma co rong hay khong
+                {
+                                  cout<<"bo ma phan tach duoc"; // neu cot rong thi bo ma phan tach duoc
+                                  getch();
+                                  exit(1);
+                }
+              else  // neu khong rong thi tiep tuc tao bang thu ma tiep theo
+                {
+                                  p[i].dislay();
+                                  if(p[i].kiem_tra_trung(p[0])==1)  // kiem tra xem o cot thu i nay co tu ma nao trung voi tu ma trong cot 1 hay khong
+                                    {
+                                         cout<<" \n bo ma khong phan tach duoc";  // neu co thi nghia la khong phan tach duoc
+                                         getch();
+                                          exit(1);
+                                    }
+                                  for(int j=0;j<s;j++)// kiem tra cac phan tu cua bang ma moi tao ra da xuat hien trong cac bang ma truoc do hay chua
+                                  {
+                                     for(int j2=0;j2<i;j2++)
+                                        if(p[j2].kiem_tra_trung(p[i].p[j])==1)
+                                        {
+                                        l++; // neu co roi thi tang l len 1 don vi
+                                        break;
+                                        }
+                                        continue;
+                                  }
+                                  if(l==s) // chi khi tat ca cac tu ma da xuat hien truoc do roi thi moi ket luan Phan tach duoc
+                                  {
+                                          cout<<" \n bo ma PHAN TACH DUOC nhung co do cham giai ma la vo han ";
+                                          getch();
+                                          exit(1);
+                                  }
+                                  
+                  }                
+                                  
+              i++;
+              
+        }
+        while(1);
+       
+    }
+    getch();
+}
+
+// vi du 
+
+// bo ma prefix phan tach duoc 00,01,100,1010,1011
+
+// bo ma co do cham giai ma vo han 10,100,01,011
+
+// bo ma khong phan tach duoc 00110,01001,110101,1001,00111,11100,10,10110
+
+// bo ma co do cham gia ma vo han 0110,00,0001,1011,11001
+
+
+
+
+
+    
